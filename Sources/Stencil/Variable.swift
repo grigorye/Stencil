@@ -112,7 +112,7 @@ public struct Variable: Equatable, Resolvable {
       return resolve(bit: bit, collection: string)
     } else if let object = context as? NSObject {  // NSKeyValueCoding
       #if os(Linux)
-        return "XXX" // Mirror(reflecting: object).getValue(for: bit)
+        return Mirror(reflecting: context!).getValue(for: bit) ?? "No Mirror"
       #else
         if object.responds(to: Selector(bit)) {
           return object.value(forKey: bit)
