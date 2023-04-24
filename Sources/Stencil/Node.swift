@@ -163,6 +163,12 @@ public class VariableNode: NodeType {
 }
 
 func stringify(_ result: Any?) -> String {
+  #if os(Linux)
+  if let result = result as? NSNumber, result.stringValue.hasSuffix(".0") {
+    return String(result.stringValue.dropLast(2))
+  }
+  #endif
+
   if let result = result as? String {
     return result
   } else if let array = result as? [Any?] {
