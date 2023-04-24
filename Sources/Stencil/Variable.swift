@@ -110,9 +110,9 @@ public struct Variable: Equatable, Resolvable {
       return resolve(bit: bit, collection: array)
     } else if let string = context as? String {
       return resolve(bit: bit, collection: string)
-    } else if let object = context as? NSObject, !isLinux {  // NSKeyValueCoding
+    } else if let object = context as? NSObject {  // NSKeyValueCoding
         #if os(Linux)
-        return nil
+        return mimicValue(context!, for: bit)
         #else
         if object.responds(to: Selector(bit)) {
           return object.value(forKey: bit)
@@ -290,10 +290,15 @@ extension Optional: AnyOptional {
   }
 }
 
-var isLinux: Bool {
 #if os(Linux)
-    true
-#else
-    false
-#endif
+func mimicValue(_ context: Any, for key: String) -> Any? {
+    switch Mirror(reflecting: context).getValue(for: key) {
+    case let x as Int:
+        return NSNumber(value: x)
+    case let x as Double:
+        return NSNumber(value: x)
+    default:
+        return nil
+    }
 }
+#endif
