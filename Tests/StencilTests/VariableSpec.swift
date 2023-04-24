@@ -31,7 +31,8 @@ final class VariableTests: XCTestCase {
       "dynamic": [
         "enum": DynamicEnum.someValue,
         "struct": DynamicStruct()
-      ]
+      ],
+      "date": Date(timeIntervalSinceReferenceDate: 547184366)
     ], environment: environment)
     #if os(OSX)
     context["object"] = Object()
@@ -180,6 +181,14 @@ final class VariableTests: XCTestCase {
     }
   }
 
+  func testDate() {
+    it("can resolve using reflection or KVC") {
+      let variable = Variable("date.timeIntervalSinceReferenceDate")
+      let result = try variable.resolve(self.context) as? Double
+      try expect(result) == 547184366
+    }
+  }
+  
   func testKVO() {
     #if os(OSX)
     it("can resolve a value via KVO") {
