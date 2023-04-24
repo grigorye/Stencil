@@ -110,14 +110,10 @@ public struct Variable: Equatable, Resolvable {
       return resolve(bit: bit, collection: array)
     } else if let string = context as? String {
       return resolve(bit: bit, collection: string)
-    } else if let object = context as? NSObject {  // NSKeyValueCoding
-      #if os(Linux)
-        return Mirror(reflecting: context!).getValue(for: bit) ?? "No Mirror"
-      #else
+    } else if let object = context as? NSObject, !isLinux {  // NSKeyValueCoding
         if object.responds(to: Selector(bit)) {
           return object.value(forKey: bit)
         }
-      #endif
     } else if let value = context as? DynamicMemberLookup {
       return value[dynamicMember: bit]
     } else if let value = context {
@@ -288,4 +284,12 @@ extension Optional: AnyOptional {
       return nil
     }
   }
+}
+
+var isLinux: Bool {
+#if os(Linux)
+    true
+#else
+    false
+#endif
 }
