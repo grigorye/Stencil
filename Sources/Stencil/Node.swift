@@ -164,7 +164,11 @@ public class VariableNode: NodeType {
 
 func stringify(_ result: Any?) -> String {
   #if os(Linux)
-  if let result = result as? NSNumber, result.stringValue.hasSuffix(".0") {
+  if !(result is any Numeric),
+     let result = result as? NSNumber,
+     result.stringValue.hasSuffix(".0"),
+     NSNumber(value: Double(result.intValue)) == result || NSNumber(value: Float(result.intValue)) == result
+  {
     return String(result.stringValue.dropLast(2))
   }
   #endif
