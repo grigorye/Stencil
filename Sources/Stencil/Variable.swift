@@ -290,7 +290,6 @@ extension Optional: AnyOptional {
   }
 }
 
-#if os(Linux)
 func mimicValue(_ context: Any, for key: String) -> Any? {
     switch Mirror(reflecting: context).getValue(for: key) {
     case let x as Int:
@@ -301,4 +300,3 @@ func mimicValue(_ context: Any, for key: String) -> Any? {
         return nil
     }
 }
-#endif
